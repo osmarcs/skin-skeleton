@@ -1,0 +1,23 @@
+{
+  "name": "skin-skeleton",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Osmar Costa <osmar.costa.s@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/osmarcs/skin-skeleton",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "./components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-router": "0.3.2",
+    "angular": "angularjs#^1.6.4",
+    "oclazyload": "ocLazyLoad#^1.1.0"
+  }
+}
