@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "bower": "bower",
+    "dev": "lite-server",
+    "gulp:dev": "gulp dev",
+    "gulp:build": "cross-env NODE_ENV=production gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +23,17 @@
   "homepage": "https://github.com/osmarcs/skin-skeleton#readme",
   "devDependencies": {
     "bower": "^1.8.0",
-    "gulp": "^3.9.1"
+    "cross-env": "^5.0.1",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-load-plugins": "^1.5.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-watch": "^4.3.11",
+    "lite-server": "^2.3.0",
+    "run-sequence": "^2.0.0"
   }
 }
