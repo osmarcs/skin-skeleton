@@ -42,7 +42,7 @@ gulp.task('sass', function () {
   return gulp.src(paths.sass.entry)
   .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
   .pipe(plugins.sass({outputStyle: 'compressed'}).on('error', plugins.sass.logError))
-  .pipe(plugins.sourcemaps.write('./'))
+  .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
   .pipe(gulp.dest(paths.sass.output));
 });
 
@@ -65,7 +65,9 @@ gulp.task('sass:watch', function () {
  */
  gulp.task('vendor-js', function () {
   return gulp.src(paths.js.vendor.entry)
+    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
     .pipe(plugins.concat(paths.js.vendor.bundle))
+    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
     .pipe(gulp.dest(paths.js.vendor.output));
 });
 
@@ -74,7 +76,10 @@ gulp.task('sass:watch', function () {
  */
  gulp.task('app-js', function () {
   return gulp.src(paths.js.app.entry)
+    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
+    .pipe(plugins.babel({presets: ['es2015']}))
     .pipe(plugins.concat(paths.js.app.bundle))
+    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
     .pipe(gulp.dest(paths.js.app.output));
 });
 
@@ -89,6 +94,9 @@ gulp.task('app-js:watch', function () {
  */
  gulp.task('modules-js', function () {
   return gulp.src(paths.js.modules.entry)
+    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
+    .pipe(plugins.babel({presets: ['es2015']}))
+    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
     .pipe(gulp.dest(paths.js.modules.output));
 });
 
