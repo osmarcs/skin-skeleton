@@ -1,13 +1,14 @@
 'use strict';
 
-const gulp    = require('gulp');
+const gulp = require('gulp');
 const plugins = require('gulp-load-plugins')();
-plugins.runSequence = require('run-sequence');
+const runSequence = require('run-sequence');
+const pump = require('pump');
 
 const paths = {
   dist: './dist',
   sass: {
-    entry:  './src/scss/main.scss',
+    entry: './src/scss/main.scss',
     output: './dist/css',
     watch: './src/scss/**/*.scss'
   },
@@ -18,7 +19,7 @@ const paths = {
       bundle: 'vendor.js'
     },
     app: {
-      entry: ['./src/app/app.module.js','./src/app/app.config.js'],
+      entry: ['./src/app/app.module.js', './src/app/app.config.js'],
       output: './dist/app',
       bundle: 'app.bundle.js'
     },
@@ -38,15 +39,17 @@ const onSourcemaps = process.env.NODE_ENV != "production";
 /*
  * SASS TASK
  */
-gulp.task('sass', function () {
+gulp.task('sass', function() {
   return gulp.src(paths.sass.entry)
-  .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
-  .pipe(plugins.sass({outputStyle: 'compressed'}).on('error', plugins.sass.logError))
-  .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
-  .pipe(gulp.dest(paths.sass.output));
+    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
+    .pipe(plugins.sass({
+      outputStyle: 'compressed'
+    }).on('error', plugins.sass.logError))
+    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
+    .pipe(gulp.dest(paths.sass.output));
 });
 
-gulp.task('sass:watch', function () {
+gulp.task('sass:watch', function() {
   plugins.watch(paths.sass.watch, function() {
     gulp.start('sass');
   });
@@ -55,15 +58,17 @@ gulp.task('sass:watch', function () {
 /*
  * Clean Task
  */
- gulp.task('clean', function () {
-  return gulp.src(paths.dist, {read: false})
+gulp.task('clean', function() {
+  return gulp.src(paths.dist, {
+      read: false
+    })
     .pipe(plugins.clean());
 });
 
 /*
  * Copy Components JS Task
  */
- gulp.task('vendor-js', function () {
+gulp.task('vendor-js', function() {
   return gulp.src(paths.js.vendor.entry)
     .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
     .pipe(plugins.concat(paths.js.vendor.bundle))
@@ -74,16 +79,21 @@ gulp.task('sass:watch', function () {
 /*
  * Copy App JS Task
  */
- gulp.task('app-js', function () {
-  return gulp.src(paths.js.app.entry)
-    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
-    .pipe(plugins.babel({presets: ['es2015']}))
-    .pipe(plugins.concat(paths.js.app.bundle))
-    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
-    .pipe(gulp.dest(paths.js.app.output));
+gulp.task('app-js', function(cb) {
+  pump([
+    gulp.src(paths.js.app.entry),
+    plugins.if(onSourcemaps, plugins.sourcemaps.init()),
+    plugins.babel({
+      presets: ['es2015']
+    }),
+    plugins.concat(paths.js.app.bundle),
+    plugins.uglify(),
+    plugins.if(onSourcemaps, plugins.sourcemaps.write('./')),
+    gulp.dest(paths.js.app.output)
+  ], cb);
 });
 
-gulp.task('app-js:watch', function () {
+gulp.task('app-js:watch', function() {
   plugins.watch(paths.js.app.entry, function() {
     gulp.start('app-js');
   });
@@ -92,15 +102,20 @@ gulp.task('app-js:watch', function () {
 /*
  * Copy Modules JS Task
  */
- gulp.task('modules-js', function () {
-  return gulp.src(paths.js.modules.entry)
-    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.init()))
-    .pipe(plugins.babel({presets: ['es2015']}))
-    .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
-    .pipe(gulp.dest(paths.js.modules.output));
+gulp.task('modules-js', function(cb) {
+  pump([
+    gulp.src(paths.js.modules.entry)
+    plugins.if(onSourcemaps, plugins.sourcemaps.init()),
+    plugins.babel({
+      presets: ['es2015']
+    }),
+    plugins.uglify(),
+    plugins.if(onSourcemaps, plugins.sourcemaps.write('./')),
+    gulp.dest(paths.js.modules.output)
+  ], cb);
 });
 
-gulp.task('modules-js:watch', function () {
+gulp.task('modules-js:watch', function() {
   plugins.watch(paths.js.modules.entry, function() {
     gulp.start('modules-js');
   });
@@ -109,22 +124,25 @@ gulp.task('modules-js:watch', function () {
 /*
  * Copy HTML Task
  */
-gulp.task('html-copy', function () {
+gulp.task('html-copy', function() {
   return gulp.src(paths.html.entry)
-      .pipe(plugins.htmlmin({collapseWhitespace: true, removeComments: true}))
-      .pipe(gulp.dest(paths.html.output));
+    .pipe(plugins.htmlmin({
+      collapseWhitespace: true,
+      removeComments: true
+    }))
+    .pipe(gulp.dest(paths.html.output));
 });
-gulp.task('html-copy:watch', function () {
+gulp.task('html-copy:watch', function() {
   plugins.watch(paths.html.entry, function() {
     gulp.start('html-copy');
   });
 });
 
 gulp.task('watch', [
-    'sass:watch',
-    'app-js:watch',
-    'modules-js:watch',
-    'html-copy:watch'
+  'sass:watch',
+  'app-js:watch',
+  'modules-js:watch',
+  'html-copy:watch'
 ]);
 
 let tasks = [
@@ -135,10 +153,11 @@ let tasks = [
   'html-copy',
 ];
 
-gulp.task('dev', function () {
-  plugins.runSequence('clean', tasks.concat('watch'));
+gulp.task('dev', function() {
+  runSequence('clean', tasks.concat('watch'));
 });
 
-gulp.task('default', function () {
-  plugins.runSequence('clean', tasks);
+gulp.task('default', function() {
+
+  runSequence('clean', tasks);
 });
