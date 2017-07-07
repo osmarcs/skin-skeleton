@@ -45,6 +45,7 @@ gulp.task('sass', function() {
     .pipe(plugins.sass({
       outputStyle: 'compressed'
     }).on('error', plugins.sass.logError))
+    .pipe(plugins.autoprefixer())
     .pipe(plugins.if(onSourcemaps, plugins.sourcemaps.write('./')))
     .pipe(gulp.dest(paths.sass.output));
 });
@@ -104,7 +105,7 @@ gulp.task('app-js:watch', function() {
  */
 gulp.task('modules-js', function(cb) {
   pump([
-    gulp.src(paths.js.modules.entry)
+    gulp.src(paths.js.modules.entry),
     plugins.if(onSourcemaps, plugins.sourcemaps.init()),
     plugins.babel({
       presets: ['es2015']
