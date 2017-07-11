@@ -15,7 +15,10 @@
     "url": "git+https://github.com/osmarcs/skin-skeleton.git"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Osmar Costa",
+    "email": "osmar.costa.s@gmail.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/osmarcs/skin-skeleton/issues"
