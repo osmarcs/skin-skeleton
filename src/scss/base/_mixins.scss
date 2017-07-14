@@ -1,0 +1,7 @@
+@mixin respond-to($toDevice...) {
+  @each $devide in $toDevice {
+    @media #{map-get($devicesBreakPoint, $devide)} {
+      @content;
+    }
+  }
+}
