@@ -1,0 +1,3 @@
+@function em($pixels, $context: $base) {
+  @return #{$pixels/$context}em;
+}
