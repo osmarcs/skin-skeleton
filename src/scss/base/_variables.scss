@@ -1,1 +1,18 @@
-$colorPrimary: #FFF;
+$colors: (
+  'white': #FFF,
+  'black': #000,
+  'red':  #F00,
+  'blue': #00F,
+  'green': #0F0
+);
+
+$base: 16;
+
+// $devicesBreakPoint: (
+//   'phone': 'only screen and (max-width: #{$screen-xs})',
+//   'phone-landscape': 'only screen and (orientation: landscape) and (max-width: #{$screen-sm - 1})',
+//   'tablet': 'only screen and (min-width: #{$screen-xs+1}) and (max-width: 1024px)',
+//   'tablet-landscape': 'only screen and (orientation: landscape) and (min-width: #{$screen-sm})',
+// );
+
+$colorPrimary: map-get($colors,'blue');
